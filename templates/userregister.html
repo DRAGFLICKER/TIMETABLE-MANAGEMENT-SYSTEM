@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+        }
+
+        #centered {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: aliceblue;
+        }
+
+        .lg-main{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background: rgb(255, 255, 255);
+            padding: 2rem;
+            width: 440px;
+            height: 320px;
+            gap: 5%;
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+        }
+        .uname{
+            background: transparent;
+            border: solid 0px black;
+            outline: none !important;
+            width: 400px;
+            height: 50px;
+        }
+        .passw{
+            background: transparent;
+            border: solid 0px black;
+            outline: none !important;
+            width: 400px;
+            height: 50px;
+        }
+        .uname input{
+            width: 100%;
+            height: 85%;
+            outline: none !important;
+            background-color: lightgray;
+            border: none;
+            border-radius: 3px;
+            
+        }
+        .passw input{
+            width: 100%;
+            height: 85%;
+            outline: none !important;
+            background-color: lightgray;
+            border: none;
+            border-radius: 3px;
+        }
+        input::placeholder{
+            padding: 20px;
+            
+        }
+        .lg-main h1{
+            
+            padding-right: 170px;
+        
+        }
+        .btn-lg{
+            width: 400px;
+            
+            
+        }
+        .btn-lg button{
+            padding: .9rem;
+            width: 100%;
+            height: 85%;
+            background: #6fbff9bb;
+            outline: none !important;
+            border: none;
+            box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;
+            transition: all .8s;
+        }
+        .btn-lg button:hover{
+            padding: .9rem;
+            width: 100%;
+            height: 85%;
+            background: #0088ffbb;
+            outline: none !important;
+            border: none;
+            box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;
+            transition: all .8s;
+        }
+    </style>
+
+</head>
+<body>
+
+    <canvas></canvas>
+<form action="" method="post">
+    <div id="centered">
+        <div class="lg-main" style="height: 100vh;">
+            <div class="head-lg"><h1 style="color: #0088ff;">Account Register User</h1></div>
+            <div class="uname">
+                <input type="text" name="fname" placeholder="ENTER YOUR FIRST NAME">
+            </div>
+            <div class="uname">
+                <input type="text" name="lname" placeholder="ENTER YOUR LAST NAME">
+            </div>
+            <div class="uname">
+                <input type="text" name="place" placeholder="ENTER YOUR PLACE">
+            </div>
+            <div class="uname">
+                <input type="number" name="phone" placeholder="ENTER YOUR PHONE">
+            </div>
+            <div class="uname">
+                <input type="email" name="email" placeholder="ENTER YOUR EMAIL">
+            </div>
+            <div class="uname">
+                <input type="text" name="uname" placeholder="ENTER YOUR USERNAME">
+            </div>
+            <div class="passw">
+                <input type="text" name="pass" placeholder="ENTER YOUR PASSWORD">
+            </div>
+            <div class="btn-lg">
+                <button name="login">Register</button>
+            </div>
+            <div style="color: black;">Have Account.....?&nbsp&nbsp<a href="/login" style="text-decoration: none;">Login</a></div>
+        </div>
+    </div>
+</form>
+    <script>
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame
+
+        onload = function (){
+            setTimeout(init,0)
+        }
+
+        init = function(){
+            canvas = document.querySelector('canvas')
+            ctx = canvas.getContext('2d')
+
+            onresize = function(){
+                canvas.width = canvas.clientWidth
+                canvas.height = canvas.clientHeight
+            }
+            onresize()
+
+            mouse = {x:canvas.width/2,y:canvas.height/2,out:false}
+
+            canvas.onmouseout = function(){
+                mouse.out = true
+            }
+
+            canvas.onmousemove = function(e){
+                var rect = canvas.getBoundingClientRect()
+                mouse = {
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top,
+                    out: false
+                }
+            }
+
+            gravityStrength = 10
+            particles = []
+            spawnTimer = 0
+            spawnInterval = 10
+            type = 0
+            requestAnimationFrame(startLoop)
+        }
+
+        newParticle = function(){
+            type = type?0:1
+            particles.push({
+                x:mouse.x,
+                y:mouse.y,
+                xv:type?18*Math.random()-9:24*Math.random()-12,
+                yv:type?18*Math.random()-9:24*Math.random()-12,
+                c:type?'rgb(255,'+((200*Math.random())|0)+','+((80*Math.random())|0)+')':'rgb(255,255,255)',
+                s:type?5+10*Math.random():1,
+                a:1
+            })
+        }
+
+        startLoop = function(newTime){
+            time = newTime
+            requestAnimationFrame(loop)
+        }
+
+        loop = function(newTime){
+            draw()
+            calculate(newTime)
+            requestAnimationFrame(loop)
+        }
+
+        draw = function(){
+            ctx.clearRect(0,0,canvas.width,canvas.height)
+            for(var i=0;i<particles.length;i++){
+                var p = particles[i]
+                ctx.globalAlpha = p.a
+                ctx.fillStyle = p.c
+                ctx.beginPath()
+                ctx.arc(p.x,p.y,p.s,0,2*Math.PI)
+                ctx.fill()
+            }
+        }
+
+        calculate = function(newTime){
+            var dt = newTime-time
+            time = newTime
+
+            if(!mouse.out){
+                spawnTimer += (dt<100)?dt:100
+                for(;spawnTimer>0;spawnTimer-=spawnInterval){
+                    newParticle()
+                }
+            }
+
+            particleOverflow = particles.length-700
+            if(particleOverflow>0){
+                particles.splice(0,particleOverflow)
+            }
+
+            for(var i=0;i<particles.length;i++){
+    var p = particles[i]
+    if(!mouse.out){
+      x = mouse.x-p.x
+      y = mouse.y-p.y
+      a = x*x+y*y
+      a = a>100?gravityStrength/a:gravityStrength/100
+      p.xv = (p.xv+a*x)*0.99
+      p.yv = (p.yv+a*y)*0.99
+    }
+    p.x += p.xv
+    p.y += p.yv
+    p.a *= 0.99
+  }
+}
+</script>

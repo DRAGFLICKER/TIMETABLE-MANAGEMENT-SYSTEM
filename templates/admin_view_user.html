@@ -1,0 +1,49 @@
+{% include 'adminheader.html'%}
+<br><br><br>
+
+
+
+
+
+
+<center>
+<h2> Users</h2>
+
+	 <table class="table" style="width: 200px">
+	 	<tr>
+	 		<th>Sl.no</th>
+	 		<th>First Name</th>
+	 		<th>Last Name</th>
+	 		<th>Place</th>
+	 		<th> Phone</th>
+	 		<th> Email</th>
+			 <th> status</th>
+	 		{% for row in data['staff'] %}
+	 		<tr>
+	 			<td>{{loop.index}}</td>
+	 			<td>{{row['first_name']}}</td>
+	 			<td>{{row['last_name']}}</td>
+	 			<td>{{row['place']}}</td>
+	 			<td>{{row['phone']}}</td>
+	 			<td>{{row['email']}}</td>
+				 <td>{{row['user_type']}}</td>
+
+				
+				{%if row['user_type'] =='user'%}
+				<td><a class="btn btn-success" href="?action=reject&uid={{row['login_id']}}">Block</a></td>
+				{%else%}
+				<td><a class="btn btn-success" href="?action=accept&uid={{row['login_id']}}">Unblock</a></td>
+				{%endif%}
+
+
+	 			
+	 			
+	 		</tr>
+	 		{% endfor %}
+	 	</tr>
+	 </table>
+
+</center>
+
+<br><br><br>
+{% include 'footer.html'%}
